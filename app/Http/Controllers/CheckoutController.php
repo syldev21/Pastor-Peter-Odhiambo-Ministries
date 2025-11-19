@@ -78,7 +78,7 @@ class CheckoutController extends Controller
             session()->forget('cart');
         }
 
-        return redirect()->route('orders.thankyou');
+        return redirect()->route('orders.payment.show', $order);
     }
     public function paymentForm(Order $order)
     {

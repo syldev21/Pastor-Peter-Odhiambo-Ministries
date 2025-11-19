@@ -92,7 +92,7 @@
                 </h3>
 
                 <a href="{{ route('checkout.show') }}"
-                   class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition">
+                   class="bg-green-600 hover:bg-green-700 text-gray px-6 py-3 rounded-lg font-semibold transition">
                     Proceed to Checkout
                 </a>
             </div>

@@ -7,6 +7,7 @@ use App\Http\Controllers\BookExportController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\PaymentController;
 
 // ------------------------------
 // 📚 Books & Home
@@ -50,11 +51,7 @@ Route::get('/admin/books/export', BookExportController::class)
 // 🛒 Cart Routes (Both Guests & Auth Users)
 // ------------------------------
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-
-// Add to cart (handles both guest and auth)
 Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
-
-// Update & Remove (auth users)
 Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
 Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
 
@@ -70,11 +67,18 @@ Route::get('/checkout', [CheckoutController::class, 'show'])->name('checkout.sho
 Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
 Route::view('/orders/thankyou', 'checkout.thankyou')->name('orders.thankyou');
 
-// Authenticated users: payment steps
-Route::middleware(['auth'])->group(function () {
-    Route::get('/orders/{order}/payment', [CheckoutController::class, 'paymentForm'])->name('orders.payment.form');
-    Route::post('/orders/{order}/payment', [CheckoutController::class, 'submitPayment'])->name('orders.payment.submit');
-});
+// ------------------------------
+// 💵 Payment (Auth Only)
+// ------------------------------
+// Payment routes
+Route::get('/orders/{order}/payment', [PaymentController::class, 'show'])->name('orders.payment.show');
+Route::post('/orders/{order}/payment', [PaymentController::class, 'store'])->name('orders.payment.store');
+Route::post('/orders/{order}/payment/stk', [PaymentController::class, 'stkPush'])->name('orders.payment.stk');
+
+// ------------------------------
+// 📡 M-Pesa Callback
+// ------------------------------
+Route::post('/mpesa/callback', [PaymentController::class, 'callback'])->name('mpesa.callback');
 
 // ------------------------------
 // 🚨 Fallback
