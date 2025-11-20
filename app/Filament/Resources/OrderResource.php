@@ -35,9 +35,13 @@ class OrderResource extends Resource
             Select::make('status')
                 ->options([
                     'pending' => 'Pending',
+                    'payment_initiated' => 'Payment Initiated',
+                    'processing' => 'Processing',
                     'paid' => 'Paid',
                     'shipped' => 'Shipped',
                     'cancelled' => 'Cancelled',
+                    'failed' => 'Failed',
+                    'refunded' => 'Refunded',
                 ])
                 ->required(),
 
@@ -52,24 +56,33 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')->label('Order #')->sortable(),
                 TextColumn::make('user.name')->label('Customer')->searchable(),
                 TextColumn::make('total_amount')->money('KES')->sortable(),
                 BadgeColumn::make('status')->colors([
                     'pending' => 'warning',
+                    'payment_initiated' => 'warning',
+                    'processing' => 'info',
                     'paid' => 'success',
-                    'shipped' => 'info',
-                    'cancelled' => 'danger',
+                    'shipped' => 'primary',
+                    'cancelled' => 'gray',
+                    'failed' => 'danger',
+                    'refunded' => 'secondary',
                 ]),
-                TextColumn::make('payment_ref')->label('Payment Ref')->searchable(),
+                TextColumn::make('payment_ref')->label('Payment Ref')->searchable()->limit(20),
                 TextColumn::make('created_at')->label('Date')->dateTime()->sortable(),
             ])
             ->filters([
                 SelectFilter::make('status')
                     ->options([
                         'pending' => 'Pending',
+                        'payment_initiated' => 'Payment Initiated',
+                        'processing' => 'Processing',
                         'paid' => 'Paid',
                         'shipped' => 'Shipped',
                         'cancelled' => 'Cancelled',
+                        'failed' => 'Failed',
+                        'refunded' => 'Refunded',
                     ]),
             ])
             ->actions([

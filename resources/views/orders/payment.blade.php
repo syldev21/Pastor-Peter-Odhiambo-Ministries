@@ -40,7 +40,7 @@
         <div x-show="method === 'paybill'" x-transition class="space-y-4">
             <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                 <p class="font-semibold text-green-700">Paybill: <span class="font-mono">123456</span></p>
-                <p class="text-green-700">Account: <span class="font-mono">Gospel Grove</span></p>
+                <p class="text-green-700">Account: <span class="font-mono">{{config('app.name')}}</span></p>
                 <p class="text-green-700">Amount: KES <span class="font-mono">{{ number_format($order->total_amount, 2) }}</span></p>
             </div>
 
@@ -66,7 +66,7 @@
                 <input type="text" name="phone" placeholder="07XXXXXXXX"
                        class="w-full border rounded-lg p-3 focus:ring-green-500 focus:border-green-500" required>
                 <button type="submit"
-                        class="w-full bg-green-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">
                     Send STK Push
                 </button>
             </form>

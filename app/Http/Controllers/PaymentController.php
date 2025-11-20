@@ -66,22 +66,32 @@ class PaymentController extends Controller
             'PartyA' => $data['phone'],
             'PartyB' => $shortcode,
             'PhoneNumber' => $data['phone'],
-            'CallBackURL' => route('mpesa.callback'),
+            #'CallBackURL' => route('mpesa.callback'),
+            'CallBackURL' => 'https://your-ngrok-url.ngrok.io/mpesa/callback',
             'AccountReference' => $order->id,
             'TransactionDesc' => 'Payment for Order #' . $order->id,
         ];
 
         $response = Http::withToken($accessToken)
             ->post(env('MPESA_STK_URL'), $payload);
+        // return $response->json();
 
         // ✅ Update order status
         $order->update([
             'status' => 'payment_initiated',
         ]);
 
-        return redirect()
-            ->route('orders.thankyou')
-            ->with('success', 'STK Push sent to your phone. Please approve payment to finalize your order.');
+        // return redirect()
+        //     ->route('orders.thankyou')
+        //     ->with('success', 'STK Push sent to your phone. Please approve payment to finalize your order.');
+        return redirect()->route('orders.thankyou')
+            ->with([
+                'email' => $order->email,
+                'phone' => $order->phone,
+                'checkout_id' => $order->checkout_id,
+                'success' => 'Payment received successfully!',
+            ]);
+
     }
     /**
      * Handle M-Pesa callback.
@@ -89,36 +99,40 @@ class PaymentController extends Controller
     public function callback(Request $request)
     {
         $data = $request->all();
+        \Log::info('M-Pesa Callback', $data);
 
-        if (isset($data['Body']['stkCallback']['ResultCode'])) {
-            $resultCode = $data['Body']['stkCallback']['ResultCode'];
+        $stk = $data['Body']['stkCallback'] ?? null;
+        if (!$stk) {
+            return response()->json(['status' => 'missing stkCallback']);
+        }
 
-            $items = $data['Body']['stkCallback']['CallbackMetadata']['Item'] ?? [];
-            $orderId = null;
-            $paymentRef = null;
+        $resultCode = $stk['ResultCode'];
+        $items = $stk['CallbackMetadata']['Item'] ?? [];
 
-            foreach ($items as $item) {
-                if ($item['Name'] === 'AccountReference') {
-                    $orderId = $item['Value'];
-                }
-                if ($item['Name'] === 'MpesaReceiptNumber') {
-                    $paymentRef = $item['Value'];
-                }
+        $orderId = null;
+        $paymentRef = null;
+
+        foreach ($items as $item) {
+            if ($item['Name'] === 'AccountReference') {
+                $orderId = $item['Value'];
             }
+            if ($item['Name'] === 'MpesaReceiptNumber') {
+                $paymentRef = $item['Value'];
+            }
+        }
 
-            if ($orderId) {
-                $order = Order::find($orderId);
-                if ($order) {
-                    if ($resultCode == 0) {
-                        $order->update([
-                            'status' => 'paid',
-                            'payment_ref' => $paymentRef,
-                        ]);
-                    } else {
-                        $order->update([
-                            'status' => 'payment_failed',
-                        ]);
-                    }
+        if ($orderId) {
+            $order = Order::find($orderId);
+            if ($order) {
+                if ($resultCode == 0) {
+                    $order->update([
+                        'status' => 'paid', // or Order::STATUS_PAID if defined
+                        'payment_ref' => $paymentRef,
+                    ]);
+                } else {
+                    $order->update([
+                        'status' => 'failed',
+                    ]);
                 }
             }
         }

@@ -91,9 +91,9 @@
                     Total: KES {{ number_format($total, 2) }}
                 </h3>
 
-                <a href="{{ route('checkout.show') }}"
-                   class="bg-green-600 hover:bg-green-700 text-gray px-6 py-3 rounded-lg font-semibold transition">
-                    Proceed to Checkout
+                                <a href="{{ route('checkout.show') }}"
+                    class="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+                        Proceed to Checkout
                 </a>
             </div>
 

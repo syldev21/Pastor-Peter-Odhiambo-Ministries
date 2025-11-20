@@ -13,7 +13,12 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Peter Odhiambo Ministries'),
+    // 'name' => env('APP_NAME', 'Peter Odhiambo Ministries'),
+    // 'tagline' => env('PROJECT_TAGLINE', 'Spreading the Word'),
+    // 'logo_path' => env('PROJECT_LOGO', 'images/logo.png'),
+    'name' => str_replace("_", " ", env('APP_NAME')),
+    'logo_path' => env('PROJECT_LOGO'),
+    'tagline' => str_replace("_", " ", env('PROJECT_TAGLINE')),
 
     /*
     |--------------------------------------------------------------------------

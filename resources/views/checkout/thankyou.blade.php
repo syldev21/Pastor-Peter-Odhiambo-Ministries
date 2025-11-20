@@ -15,8 +15,21 @@
     <!-- Heading -->
     <h2 class="text-3xl font-bold text-gray-800 mb-4">Thank you for your order!</h2>
     <p class="text-gray-600 mb-8">
-        We’ll be in touch shortly with your delivery details. Your support helps Gospel Grove spread the Word.
+        We’ll be in touch shortly with your delivery details. Your support helps {{ config('app.name') }} spread the Word.
     </p>
+
+    <!-- STK Push Confirmation -->
+    @if(session('success'))
+        <div class="mb-6 px-6 py-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
+            <p class="font-semibold">{{ session('success') }}</p>
+
+            @if(session('checkout_id'))
+                <p class="text-sm mt-2">
+                    <strong>Transaction Reference:</strong> {{ session('checkout_id') }}
+                </p>
+            @endif
+        </div>
+    @endif
 
     <!-- CTA for Guests -->
     @if(!auth()->check())

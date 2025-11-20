@@ -41,7 +41,7 @@
 
                     <input type="text" name="delivery_address"
                            value="{{ old('delivery_address', auth()->user()->address ?? '') }}"
-                           placeholder="Delivery Address" required
+                           placeholder="Delivery Location" required
                            class="w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition">
                 </div>
             </div>
@@ -72,12 +72,12 @@
             </div>
 
             {{-- Confirm Order Button --}}
-            <div class="text-right">
+            <div class="flex justify-end">
                 <button type="submit"
-                        class="bg-green-600 text-white px-8 py-3 rounded-lg shadow hover:bg-green-700 transition font-semibold">
+                    class="bg-blue-600 mt-6 text-white px-8 py-3 rounded-lg shadow hover:bg-green-700 transition font-semibold">
                     Confirm Order
                 </button>
-            </div>
+        </div>
         </form>
     </div>
 @endsection

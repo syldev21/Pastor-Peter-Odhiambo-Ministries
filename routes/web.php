@@ -8,11 +8,13 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\OrderController;
+use Illuminate\Support\Facades\Http;
 
 // ------------------------------
 // 📚 Books & Home
 // ------------------------------
-Route::get('/', fn() => redirect('/books'))->name('home');
+Route::get('/', fn() => redirect()->route('books.index'))->name('home');
 Route::get('/books', [BookController::class, 'index'])->name('books.index');
 
 // ------------------------------
@@ -42,13 +44,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // ------------------------------
-// 📦 Export
+// 📦 Admin Book Export
 // ------------------------------
 Route::get('/admin/books/export', BookExportController::class)
     ->middleware(['auth', 'verified']);
 
 // ------------------------------
-// 🛒 Cart Routes (Both Guests & Auth Users)
+// 🛒 Cart Routes (Guests & Auth)
 // ------------------------------
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::post('/cart/add/{book}', [CartController::class, 'add'])->name('cart.add');
@@ -70,10 +72,17 @@ Route::view('/orders/thankyou', 'checkout.thankyou')->name('orders.thankyou');
 // ------------------------------
 // 💵 Payment (Auth Only)
 // ------------------------------
-// Payment routes
 Route::get('/orders/{order}/payment', [PaymentController::class, 'show'])->name('orders.payment.show');
 Route::post('/orders/{order}/payment', [PaymentController::class, 'store'])->name('orders.payment.store');
 Route::post('/orders/{order}/payment/stk', [PaymentController::class, 'stkPush'])->name('orders.payment.stk');
+
+// ------------------------------
+// 📦 Customer Order Tracking
+// ------------------------------
+Route::middleware(['auth'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
+});
 
 // ------------------------------
 // 📡 M-Pesa Callback
@@ -81,6 +90,31 @@ Route::post('/orders/{order}/payment/stk', [PaymentController::class, 'stkPush']
 Route::post('/mpesa/callback', [PaymentController::class, 'callback'])->name('mpesa.callback');
 
 // ------------------------------
-// 🚨 Fallback
+// 🚨 Fallback & Diagnostics
 // ------------------------------
 Route::fallback(fn () => view('errors.404'));
+
+Route::get('/test', fn () => dd(php_ini_loaded_file()));
+
+Route::get('/curl-diagnostic', function () {
+    $iniPath = php_ini_loaded_file();
+    $curlInfo = curl_version();
+    $testRequest = null;
+    $error = null;
+
+    try {
+        $testRequest = Http::get('https://api.github.com')->status();
+    } catch (\Exception $e) {
+        $error = $e->getMessage();
+    }
+
+    return response()->json([
+        'php_ini_path' => $iniPath,
+        'curl_ssl_version' => $curlInfo['ssl_version'] ?? 'N/A',
+        'curl_lib_version' => $curlInfo['version'] ?? 'N/A',
+        'cacert_path' => ini_get('curl.cainfo'),
+        'openssl_cafile' => ini_get('openssl.cafile'),
+        'test_https_status' => $testRequest,
+        'error_message' => $error,
+    ]);
+});

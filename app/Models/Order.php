@@ -20,4 +20,12 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    const STATUS_PENDING = 'pending';
+    const STATUS_INITIATED = 'payment_initiated';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_PAID = 'paid';
+    const STATUS_FAILED = 'failed';
+    const STATUS_CANCELLED = 'cancelled';
+    const STATUS_SHIPPED = 'shipped';
+    const STATUS_REFUNDED = 'refunded';
 }

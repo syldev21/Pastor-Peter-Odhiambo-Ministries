@@ -60,7 +60,7 @@ class CheckoutController extends Controller
             $order = \App\Models\Order::create([
                 'user_id' => null,
                 'total_amount' => $totalAmount,
-                'status' => 'pending',
+                'status' => Order::STATUS_PENDING,
                 'payment_ref' => null,
                 'delivery_name' => $data['delivery_name'],
                 'delivery_phone' => $data['delivery_phone'],
@@ -96,7 +96,7 @@ class CheckoutController extends Controller
 
         $order->update([
             'payment_ref' => $request->payment_ref,
-            'status' => 'paid',
+            'status' => Order::STATUS_PAID,
         ]);
 
         return redirect()->route('dashboard')->with('success', 'Payment reference submitted.');
