@@ -41,6 +41,7 @@ class BookResource extends Resource
         return $form->schema([
             TextInput::make('title')->required()->maxLength(255),
             TextInput::make('author')->required()->maxLength(255),
+
             Select::make('category_id')
                 ->relationship('category', 'name')
                 ->searchable()
@@ -62,17 +63,21 @@ class BookResource extends Resource
 
             TextInput::make('price')->numeric()->required(),
             TextInput::make('stock')->numeric()->required(),
+
             Toggle::make('is_devotional')->label('Devotional?'),
             Toggle::make('is_featured')->label('Featured?'),
+
             FileUpload::make('cover_image')
+                ->disk('public') // ✅ ensure public disk is used
                 ->directory('book-covers')
                 ->image()
                 ->imageEditor()
                 ->maxSize(2048)
-                ->acceptedFileTypes(['image/jpeg', 'image/png'])
+                ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png']) // ✅ expanded types
                 ->enableDownload()
                 ->enableOpen()
                 ->nullable(),
+
             Textarea::make('description')->rows(4),
         ]);
     }
@@ -82,8 +87,9 @@ class BookResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('cover_image')
+                    ->disk('public') // ✅ ensure correct disk
                     ->circular()
-                    ->defaultImageUrl('/images/default-cover.png'),
+                    ->defaultImageUrl(asset('images/default-cover.png')), // ✅ asset helper for default
                 TextColumn::make('title')->searchable()->sortable(),
                 TextColumn::make('author')->searchable(),
                 TextColumn::make('category.name')->label('Category')->searchable(),

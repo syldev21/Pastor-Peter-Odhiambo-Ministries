@@ -18,13 +18,17 @@
         <!-- Method Buttons -->
         <div class="flex justify-center space-x-4 mb-6">
             <button type="button" @click="method = 'paybill'"
-                    :class="method === 'paybill' ? 'bg-green-600 text-white shadow-md' : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200'"
+                    :class="method === 'paybill' 
+                        ? 'bg-green-600 text-white shadow-md ring-2 ring-green-400' 
+                        : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200'"
                     class="px-5 py-3 rounded-lg font-semibold transition flex items-center space-x-2">
                 <span>💳</span>
                 <span>Paybill</span>
             </button>
             <button type="button" @click="method = 'stk'"
-                    :class="method === 'stk' ? 'bg-green-600 text-white shadow-md' : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200'"
+                    :class="method === 'stk' 
+                        ? 'bg-green-600 text-white shadow-md ring-2 ring-green-400' 
+                        : 'bg-gray-100 border border-gray-300 text-gray-700 hover:bg-gray-200'"
                     class="px-5 py-3 rounded-lg font-semibold transition flex items-center space-x-2">
                 <span>📲</span>
                 <span>STK Push</span>
@@ -36,11 +40,18 @@
             Please select a payment method to proceed.
         </div>
 
+        <!-- Selected Method Badge -->
+        <div x-show="method" class="text-center mb-4">
+            <span class="inline-block bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+                Selected: <span x-text="method.toUpperCase()"></span>
+            </span>
+        </div>
+
         <!-- Paybill Option -->
-        <div x-show="method === 'paybill'" x-transition class="space-y-4">
+        <div x-show="method === 'paybill'" x-transition.opacity class="space-y-4">
             <div class="bg-green-50 border border-green-200 rounded-lg p-4">
                 <p class="font-semibold text-green-700">Paybill: <span class="font-mono">123456</span></p>
-                <p class="text-green-700">Account: <span class="font-mono">{{config('app.name')}}</span></p>
+                <p class="text-green-700">Account: <span class="font-mono">{{ config('app.name') }}</span></p>
                 <p class="text-green-700">Amount: KES <span class="font-mono">{{ number_format($order->total_amount, 2) }}</span></p>
             </div>
 
@@ -58,7 +69,7 @@
         </div>
 
         <!-- STK Push Option -->
-        <div x-show="method === 'stk'" x-transition class="space-y-4">
+        <div x-show="method === 'stk'" x-transition.opacity class="space-y-4">
             <p class="text-gray-500 text-sm">Enter your M-Pesa number to receive an STK Push request for payment.</p>
 
             <form method="POST" action="{{ route('orders.payment.stk', $order) }}" class="space-y-4">

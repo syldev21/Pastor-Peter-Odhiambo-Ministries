@@ -87,12 +87,15 @@ Route::middleware(['auth'])->group(function () {
 // ------------------------------
 // 📡 M-Pesa Callback
 // ------------------------------
-Route::post('/mpesa/callback', [PaymentController::class, 'callback'])->name('mpesa.callback');
+// Route::post('/mpesa/callback', [PaymentController::class, 'callback'])->name('mpesa.callback');
 
 // ------------------------------
 // 🚨 Fallback & Diagnostics
 // ------------------------------
-Route::fallback(fn () => view('errors.404'));
+Route::fallback(function () {
+    return response()->view('errors.404', [], 404);
+});
+
 
 Route::get('/test', fn () => dd(php_ini_loaded_file()));
 
