@@ -77,12 +77,13 @@ class PaymentController extends Controller
             'Password' => $password,
             'Timestamp' => $timestamp,
             'TransactionType' => 'CustomerPayBillOnline',
-            'Amount' => 1, // sandbox only accepts 1
+            'Amount' => 8, // sandbox only accepts 1
             'PartyA' => $data['phone'],
             'PartyB' => $shortcode,
             'PhoneNumber' => $data['phone'],
-            // 'CallBackURL' => 'https://manuela-renowned-lauri.ngrok-free.dev/api/mpesa/callback',
-            'CallBackURL' => 'https://ons-lopez-battle-likely.trycloudflare.com/api/mpesa/callback',
+            'CallBackURL' => 'https://manuela-renowned-lauri.ngrok-free.dev/api/mpesa/callback',
+            // 'CallBackURL' => 'https://ons-lopez-battle-likely.trycloudflare.com/api/mpesa/callback',
+            // 'CallBackURL' => 'https://viewers-recognised-period-exceptions.trycloudflare.com/api/mpesa/callback',
             'AccountReference' => $order->id,
             'TransactionDesc' => 'Payment for Order #' . $order->id,
         ];

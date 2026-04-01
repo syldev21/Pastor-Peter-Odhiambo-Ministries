@@ -74,7 +74,7 @@
 
             <form method="POST" action="{{ route('orders.payment.stk', $order) }}" class="space-y-4">
                 @csrf
-                <input type="text" name="phone" placeholder="07XXXXXXXX"
+                <input type="text" name="phone" placeholder="2547XXXXXXXX"
                        class="w-full border rounded-lg p-3 focus:ring-green-500 focus:border-green-500" required>
                 <button type="submit"
                         class="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-green-700 transition">

@@ -77,7 +77,7 @@ class PaymentController extends Controller
             'Password' => $password,
             'Timestamp' => $timestamp,
             'TransactionType' => 'CustomerPayBillOnline',
-            'Amount' => 1, // sandbox only accepts 1
+            'Amount' => 8, // sandbox only accepts 1
             'PartyA' => $data['phone'],
             'PartyB' => $shortcode,
             'PhoneNumber' => $data['phone'],
