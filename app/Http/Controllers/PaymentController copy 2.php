@@ -81,9 +81,8 @@ class PaymentController extends Controller
             'PartyA' => $data['phone'],
             'PartyB' => $shortcode,
             'PhoneNumber' => $data['phone'],
-            'CallBackURL' => 'https://manuela-renowned-lauri.ngrok-free.dev/api/mpesa/callback',
-            // 'CallBackURL' => 'https://ons-lopez-battle-likely.trycloudflare.com/api/mpesa/callback',
-            // 'CallBackURL' => 'https://viewers-recognised-period-exceptions.trycloudflare.com/api/mpesa/callback',
+            // 'CallBackURL' => 'https://manuela-renowned-lauri.ngrok-free.dev/api/mpesa/callback',
+            'CallBackURL' => 'https://ons-lopez-battle-likely.trycloudflare.com/api/mpesa/callback',
             'AccountReference' => $order->id,
             'TransactionDesc' => 'Payment for Order #' . $order->id,
         ];
