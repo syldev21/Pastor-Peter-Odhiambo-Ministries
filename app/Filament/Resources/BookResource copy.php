@@ -30,8 +30,6 @@ use Filament\Tables\Filters\{
 };
 use \Filament\Tables\Actions\EditAction;
 use \Filament\Tables\Actions\DeleteAction;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
 
 class BookResource extends Resource
 {
@@ -40,81 +38,76 @@ class BookResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-s-book-open';
     protected static ?string $navigationLabel = 'Books';
     protected static ?string $pluralModelLabel = 'Books';
-    protected static ?string $navigationGroup = 'Book';
 
     public static function form(Form $form): Form
-{
-    return $form->schema([
-        Tabs::make('Book Form')
-            ->tabs([
-                Tab::make('Basic Details')
-                    ->icon("heroicon-o-arrow-right-start-on-rectangle")
-                    ->schema([
-                        TextInput::make('title')
-                            ->unique(ignoreRecord: true)
-                            ->required()
-                            ->maxLength(255),
-                        TextInput::make('author')
-                            ->required()
-                            ->maxLength(255),
+    {
+        return $form
+        ->schema([
+            Section::make("Basic Details")
+            ->description("Provide the basic details of the book")
+            ->collapsible()
+            // ->aside()
+            ->schema([
+            TextInput::make('title')
+                ->unique(ignoreRecord: true)
+                ->required()
+                ->maxLength(255),
+            TextInput::make('author')->required()->maxLength(255),
 
-                        Select::make('category_id')
-                            ->relationship('category', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255),
-                            ])
-                            ->createOptionAction(fn () => FormAction::make('Create Category')->modalHeading('Create New Category'))
-                            ->required(),
-                        TextInput::make('price')
-                            ->numeric()
-                            ->minValue(200)
-                            ->maxValue(2000)
-                            ->required(),
-                        TextInput::make('stock')
-                            ->numeric()
-                            ->minValue(1)
-                            ->required(),
-                        Toggle::make('is_devotional')->label('Devotional?'),
-                        Toggle::make('is_featured')->label('Featured?'),
-                    ]),
+            Select::make('category_id')
+                ->relationship('category', 'name')
+                ->searchable()
+                ->createOptionForm([
+            TextInput::make('name')->required()->maxLength(255),
+                ])
+                ->createOptionAction(fn () => FormAction::make('Create Category')->modalHeading('Create New Category'))
+                ->required(),
 
-                Tab::make('Meta')
-                    ->icon("heroicon-o-ellipsis-vertical")
-                    ->schema([
-                        Select::make('tags')
-                            ->multiple()
-                            ->relationship('tags', 'name')
-                            ->searchable()
-                            ->preload()
-                            ->createOptionForm([
-                                TextInput::make('name')
-                                    ->required()
-                                    ->maxLength(255),
-                            ])
-                            ->createOptionAction(fn () => FormAction::make('Create Tag')->modalHeading('Create New Tag')),
-                        Textarea::make('description')
-                            ->rows(4)
-                            ->columnSpan(2),
-                        FileUpload::make('cover_image')
-                            ->disk('public')
-                            ->directory('book-covers')
-                            ->image()
-                            ->imageEditor()
-                            ->maxSize(2048)
-                            ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png'])
-                            ->enableDownload()
-                            ->enableOpen()
-                            ->nullable(),
-                    ]),
-            ])->columnSpanFull()
-            ->activeTab(1)
-            ->persistTabInQueryString(),
-    ]);
-}
+            Select::make('tags')
+                ->multiple()
+                ->relationship('tags', 'name')
+                ->searchable()
+                ->preload()
+                ->createOptionForm([
+            TextInput::make('name')->required()->maxLength(255),
+                ])
+                ->createOptionAction(fn () => FormAction::make('Create Tag')->modalHeading('Create New Tag')),
+
+            TextInput::make('price')->numeric()->minValue(200)->maxValue(2000)->required(),
+            TextInput::make('stock')->numeric()->minValue(1)->required(),
+            Toggle::make('is_devotional')->label('Devotional?'),
+            Toggle::make('is_featured')->label('Featured?'),
+            ])->columnSpan(1)->columns([
+                "default"=>1,
+                "md"=>2,
+                "lg"=>3,
+                "xl"=>3
+            ]),
+            Section::make("Meta")
+            ->description("Provide the additional information about the book")
+            ->collapsible()
+            // ->aside()
+            ->schema([
+
+            Textarea::make('description')->rows(4)->columnSpan(2),
+            FileUpload::make('cover_image')
+                ->disk('public') // ✅ ensure public disk is used
+                ->directory('book-covers')
+                ->image()
+                ->imageEditor()
+                ->maxSize(2048)
+                ->acceptedFileTypes(['image/jpeg', 'image/jpg', 'image/png']) // ✅ expanded types
+                ->enableDownload()
+                ->enableOpen()
+                ->nullable(),
+            ])->columnSpan(1)->columns([
+                "default"=>1,
+                "md"=>2,
+                "lg"=>3,
+                "xl"=>3
+            ]),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
@@ -157,9 +150,8 @@ class BookResource extends Resource
                 SelectFilter::make('tags')
                     ->multiple()
                     ->relationship('tags', 'name')
-                    ->label('Tags')
-                    ->preload(),
-                SelectFilter::make('category')->relationship('category', 'name')->label('Category')->searchable()->preload(),
+                    ->label('Tags'),
+                SelectFilter::make('category')->relationship('category', 'name')->label('Category'),
                 TernaryFilter::make('is_devotional')->label('Devotional'),
                 TernaryFilter::make('is_featured')->label('Featured'),
                 TernaryFilter::make('stock')

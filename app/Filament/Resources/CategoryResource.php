@@ -11,17 +11,19 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-#use Illuminate\Database\Eloquent\Builder;
+use app\Filament\Resources\CategoryResource\RelationManagers\BooksRelationManager;
 
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-folder';
 
     protected static ?string $navigationLabel = 'Categories';
 
     protected static ?string $pluralModelLabel = 'Categories';
+    protected static bool $shouldSkipAuthorization = true;
+    protected static ?string $navigationGroup = 'Book';
 
     public static function form(Form $form): Form
     {
@@ -31,27 +33,6 @@ class CategoryResource extends Resource
                 ->maxLength(255),
         ]);
     }
-
-    // public static function table(Table $table): Table
-    // {
-    //     return $table
-    //         ->columns([
-    //             TextColumn::make('name')
-    //                 ->searchable()
-    //                 ->sortable(),
-    //         ])
-    //         ->filters([
-    //             //
-    //         ])
-    //         ->actions([
-    //             Tables\Actions\EditAction::make(),
-    //         ])
-    //         ->bulkActions([
-    //             Tables\Actions\BulkActionGroup::make([
-    //                 Tables\Actions\DeleteBulkAction::make(),
-    //             ]),
-    //         ]);
-    // }
     public static function table(Table $table): Table
     {
         return $table
@@ -64,6 +45,8 @@ class CategoryResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -75,7 +58,7 @@ class CategoryResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            BooksRelationManager::class,
         ];
     }
 
