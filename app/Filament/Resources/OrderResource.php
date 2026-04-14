@@ -18,16 +18,21 @@ use Filament\Tables\Columns\{
 };
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Forms\Components\Tabs;
+use App\Filament\Exports\OrderExporter;
 
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-s-arrow-path-rounded-square';
     protected static ?string $navigationLabel = 'Orders';
     protected static ?string $pluralModelLabel = 'Orders';
+    protected static ?string $navigationGroup = 'Book';
 
     public static function form(Form $form): Form
     {
@@ -56,8 +61,11 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')->label('Order #')->sortable(),
-                TextColumn::make('user.name')->label('Customer')->searchable(),
+                TextColumn::make('id')->label('Order #')->sortable(),TextColumn::make('items.book.title')
+                ->label('Books')
+                ->listWithLineBreaks() // shows multiple books nicely
+                ->searchable(),
+                TextColumn::make('delivery_name')->label('Customer')->searchable(),
                 TextColumn::make('total_amount')->money('KES')->sortable(),
                 BadgeColumn::make('status')->colors([
                     'pending' => 'warning',
@@ -87,10 +95,14 @@ class OrderResource extends Resource
             ])
             ->actions([
                 EditAction::make(),
+                DeleteAction::make(),
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(OrderExporter::class)
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
                 ]),
             ]);
     }
