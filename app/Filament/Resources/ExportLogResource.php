@@ -14,6 +14,9 @@ use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
+use App\Filament\Exports\ExportExporter;
 
 class ExportLogResource extends Resource
 {
@@ -45,6 +48,9 @@ class ExportLogResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(ExportExporter::class)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

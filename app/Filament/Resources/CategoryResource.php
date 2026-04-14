@@ -12,6 +12,10 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use app\Filament\Resources\CategoryResource\RelationManagers\BooksRelationManager;
+use Filament\Tables\Actions\ExportAction;
+use Filament\Tables\Actions\ExportBulkAction;
+use App\Filament\Exports\CategoryExporter;
+
 
 class CategoryResource extends Resource
 {
@@ -39,7 +43,7 @@ class CategoryResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('books_count')
-                    ->label('Books')
+                    ->label('Number of Books')
                     ->counts('books')
                     ->sortable(),
             ])
@@ -47,6 +51,9 @@ class CategoryResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
                 
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(CategoryExporter::class)
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

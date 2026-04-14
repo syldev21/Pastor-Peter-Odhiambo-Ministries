@@ -21,7 +21,9 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Forms\Components\Tabs;
+use App\Filament\Exports\OrderExporter;
 
 class OrderResource extends Resource
 {
@@ -94,6 +96,9 @@ class OrderResource extends Resource
             ->actions([
                 EditAction::make(),
                 DeleteAction::make(),
+            ])
+            ->headerActions([
+                ExportAction::make()->exporter(OrderExporter::class)
             ])
             ->bulkActions([
                 BulkActionGroup::make([

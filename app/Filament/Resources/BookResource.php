@@ -4,7 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\BookResource\Pages;
 use App\Models\Book;
-use App\Exports\BookExporter;
+// use App\Exports\BookExporter;
+use App\Filament\Exports\BookExporter;
 use Filament\Forms\Form;
 use Filament\Forms\Components\{
     TextInput,
@@ -17,7 +18,8 @@ use Filament\Forms\Components\{
 };
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
-use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+// use pxlrbt\FilamentExcel\Actions\Tables\ExportAction;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Columns\{
     TextColumn,
@@ -181,10 +183,7 @@ class BookResource extends Resource
             ])
             ->headerActions([
                 ExportAction::make()
-                    ->label('Export Books')
-                    ->exports([
-                        BookExporter::class,
-                    ]),
+                    ->exporter(BookExporter::class),
                 Action::make('manualExport')
                     ->label('Manual Export')
                     ->url('/admin/books/export')
